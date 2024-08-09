@@ -1,0 +1,23 @@
+{
+  "type": "module",
+  "scripts": {
+    "build:css": "tailwindcss -i ./public/style.css -o ./dist/_tailwind.css",
+    "dev:css": "npm run build:css -- --watch",
+    "dev:server": "wrangler dev src/index.tsx --assets dist --live-reload -e dev",
+    "dev": "concurrently \"npm:dev:*\"",
+    "deploy": "npm run build:css && wrangler deploy --minify src/index.tsx --assets dist"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.39.3",
+    "hono": "^4.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240129.0",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "wrangler": "^3.25.0"
+  }
+}

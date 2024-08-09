@@ -1,0 +1,26 @@
+name = "htmx-todo-v2"
+compatibility_date = "2023-12-01"
+main = "src/index.tsx"
+
+[vars]
+SUPABASE_URL = "your-supabase-url"
+SUPABASE_ANON_KEY = "your-supabase-anon-key"
+BASE_URL = "https://your-cloudflare-deployment-url"
+
+[env.dev.vars]
+SUPABASE_URL = "your-supabase-url"
+SUPABASE_ANON_KEY = "your-supabase-anon-key"
+BASE_URL = "http://127.0.0.1:8787/" # this should be the URL your `wrangler dev -e dev` uses
+
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "my-database"
+# database_id = ""
