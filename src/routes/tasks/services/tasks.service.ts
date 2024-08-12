@@ -30,16 +30,6 @@ async function deleteTaskById(c: Context, id: string): Promise<void> {
   }
 }
 
-async function changeStatusById(c: Context, id: string): Promise<Task> {
-  const { data: results, e1 } = await c.var.supabase.from('tasks').select().eq('id', id);
-  const { error } = await c.var.supabase.from('tasks').update({ completed : !results[0].completed }).eq('id', id);
-  if (error) {
-    throw error;
-  }
-  results[0].completed = !results[0].completed;
-  return results[0];
-}
-
 async function updateTitleById(c: Context, id: string, newTitle : string) {
   const { results ,error } = await c.var.supabase
     .from('tasks')

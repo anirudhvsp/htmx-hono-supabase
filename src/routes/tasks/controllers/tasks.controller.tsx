@@ -21,13 +21,6 @@ async function changeStatusById(c: Context) {
 }
 
 
-async function changeStatusById(c: Context) {
-  const idToDelete = c.req.param('id');
-  const t = await tasksService.changeStatusById(c, idToDelete);
-
-  return c.render(<Row {...t} />);
-}
-
 async function createNewTask(c: Context) {
   const formData = await c.req.parseBody();
 
