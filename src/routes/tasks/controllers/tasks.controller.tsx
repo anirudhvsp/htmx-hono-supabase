@@ -16,7 +16,7 @@ async function createNewTask(c: Context) {
 
   const newTaskData: Omit<Task, 'id'> = TaskSchema.omit({id: true}).parse(formData);
 
-  tasksService.createTask(c, newTaskData);
+  await tasksService.createTask(c, newTaskData);
 
   return c.redirect('/tasks/dashboard');
 }
