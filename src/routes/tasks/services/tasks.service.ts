@@ -31,7 +31,7 @@ async function deleteTaskById(c: Context, id: string): Promise<void> {
 }
 
 async function createTask(c: Context, task: Omit<Task, 'id'>) {
-  const { data: results, error } = await c.var.supabase.from('tasks').insert(task).select(*);
+  const { data: results, error } = await c.var.supabase.from('tasks').insert(task).select('*');
   console.log(results)
 
   if (error) {
