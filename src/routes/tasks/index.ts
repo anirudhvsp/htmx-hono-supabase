@@ -15,6 +15,9 @@ app.post('/', tasksController.createNewTask);
 app.delete('/:id', tasksController.deleteTaskById);
 app.patch('/status/:id', tasksController.changeStatusById);
 app.put('/:id', tasksController.updateTaskById);
+app.get('/:id/edit-title', tasksController.editTitle);
+app.post('/:id/edit-title/accept', tasksController.titleSuccess);
+app.post('/:id/edit-title/reject', tasksController.titleFaliure);
 
 // Pages
 app.use(layout());

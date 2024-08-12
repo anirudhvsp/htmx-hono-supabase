@@ -40,6 +40,29 @@ async function changeStatusById(c: Context, id: string): Promise<Task> {
   return results[0];
 }
 
+async function updateTitleById(c: Context, id: string, newTitle : string) {
+  const { results ,error } = await c.var.supabase
+    .from('tasks')
+    .update({ title : newTitle })
+    .eq('id', id).select();
+
+  if (error) {
+    throw error;
+  }
+  const t = await getTaskById(c, id); 
+  return t;
+}
+
+async function changeStatusById(c: Context, id: string): Promise<Task> {
+  const { data: results, e1 } = await c.var.supabase.from('tasks').select().eq('id', id);
+  const { error } = await c.var.supabase.from('tasks').update({ completed : !results[0].completed }).eq('id', id);
+  if (error) {
+    throw error;
+  }
+  results[0].completed = !results[0].completed;
+  return results[0];
+}
+
 async function createTask(c: Context, task: Omit<Task, 'id'>) {
   const { data: results, error } = await c.var.supabase.from('tasks').insert(task).select('*');
 
@@ -65,6 +88,7 @@ export default {
   getTaskById,
   deleteTaskById,
   createTask,
-  updateTask,  
+  updateTask, 
   changeStatusById,
+  updateTitleById,
 };

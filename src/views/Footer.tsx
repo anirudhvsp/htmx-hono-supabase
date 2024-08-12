@@ -6,7 +6,7 @@ export default function Footer() {
         class="flex justify-center w-full text-sm text-gray-400 hover:text-black"
         target="_blank"
       >
-        &copy; 2024 
+        Serverless HTMX App &copy; 2024 
       </a>
     </footer>
   );
