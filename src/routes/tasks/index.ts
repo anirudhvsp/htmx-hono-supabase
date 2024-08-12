@@ -13,6 +13,7 @@ app.use(authMiddleware);
 app.get('/', viewController.tasksTable);
 app.post('/', tasksController.createNewTask);
 app.delete('/:id', tasksController.deleteTaskById);
+app.patch('/status/:id', tasksController.changeStatusById);
 app.put('/:id', tasksController.updateTaskById);
 
 // Pages
