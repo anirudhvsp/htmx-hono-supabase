@@ -18,11 +18,18 @@ export default function Row({
         {description}
       </td>
       <td className="px-4 py-2 text-center text-gray-700 whitespace-nowrap">
-        {completed ? (
-          <SuccessBadge text="Completed" />
-        ) : (
-          <ErrorBadge text="Pending" />
-        )}
+        <a
+          title="Update Status"
+          hx-patch={`/tasks/status/${id}`}
+          hx-target={`#row-${id}`}
+          hx-swap="outerHTML"
+        >
+          {completed ? (
+            <SuccessBadge text="Completed" />
+          ) : (
+            <ErrorBadge text="Pending" />
+          )}
+        </a>
       </td>
       <td className="px-4 py-2 text-center text-gray-700 whitespace-nowrap">
         {new Date(due_date).toISOString().split('T')[0].replaceAll('-', '/')}
