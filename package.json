@@ -3,9 +3,9 @@
   "scripts": {
     "build:css": "tailwindcss -i ./public/style.css -o ./dist/_tailwind.css",
     "dev:css": "npm run build:css -- --watch",
-    "dev:server": "wrangler dev src/index.tsx --assets dist --live-reload -e dev",
+    "dev:server": "wrangler dev src/index.tsx --legacy-assets dist --live-reload -e dev",
     "dev": "concurrently \"npm:dev:*\"",
-    "deploy": "npm run build:css && wrangler deploy --minify src/index.tsx --assets dist"
+    "deploy": "npm run build:css && wrangler deploy --minify src/index.tsx --legacy-assets dist"
   },
   "dependencies": {
     "@supabase/ssr": "^0.1.0",
