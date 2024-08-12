@@ -5,7 +5,7 @@ export default function HomePage() {
         <div class="mx-auto max-w-xl text-center">
           <h1 class="text-3xl font-extrabold sm:text-5xl">
             Conquer your day
-            <strong class="font-extrabold text-yellow-400 sm:block">
+            <strong class="font-extrabold text-gray-900 sm:block">
               {' '}
               One task at a time.{' '}
             </strong>
@@ -18,14 +18,14 @@ export default function HomePage() {
 
           <div class="mt-8 flex flex-wrap justify-center gap-4">
             <a
-              class="block w-full rounded bg-yellow-500 px-12 py-3 text-sm font-medium text-white shadow hover:bg-yellow-600 focus:outline-none focus:ring active:bg-yellow-500 sm:w-auto"
+              class="block w-full rounded bg-yellow-500 px-12 py-3 text-sm font-medium text-grey-800 shadow hover:bg-yellow-600 focus:outline-none focus:ring active:bg-yellow-500 sm:w-auto"
               href="/tasks/dashboard"
             >
               Dashboard
             </a>
 
             <a
-              class="block w-full rounded px-12 py-3 text-sm font-medium text-yellow-500 shadow hover:text-yellow-600 focus:outline-none focus:ring active:text-yellow-500 sm:w-auto"
+              class="block w-full rounded px-12 py-3 text-sm font-medium text-gray-800 shadow hover:text-yellow-600 focus:outline-none focus:ring active:text-yellow-500 sm:w-auto"
               href="#"
             >
               Learn More

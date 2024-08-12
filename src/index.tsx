@@ -32,7 +32,6 @@ const app = new Hono<{ Variables: Variables; Bindings: Bindings }>();
 
 // Middleware
 app.use(logger());
-
 // Handlers
 app.get('/', (c) => c.redirect('/home'));
 app.get('/env', (c) => c.json(env(c))); // TODO: Remove later, this is only for debugging purposes to test wrangler.toml environments

@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "build:css": "tailwindcss -i ./public/style.css -o ./dist/_tailwind.css",
+    "build:css": "tailwindcss -i ./public/style.css -o ./dist/_tailwind.css --minify",
     "dev:css": "npm run build:css -- --watch",
     "dev:server": "wrangler dev src/index.tsx --legacy-assets dist --live-reload -e dev",
     "dev": "concurrently \"npm:dev:*\"",
