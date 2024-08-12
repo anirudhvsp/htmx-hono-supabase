@@ -65,5 +65,6 @@ export default {
   getTaskById,
   deleteTaskById,
   createTask,
-  updateTask,
+  updateTask,  
+  changeStatusById,
 };
