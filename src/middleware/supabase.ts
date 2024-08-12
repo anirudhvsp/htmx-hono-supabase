@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { MiddlewareHandler, Context } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { env } from 'hono/adapter';
+import { createBrowserClient } from '@supabase/ssr'
 
 export const supabaseMiddleware: MiddlewareHandler<{
   Variables: {
@@ -10,7 +11,7 @@ export const supabaseMiddleware: MiddlewareHandler<{
   };
 }> = async (c: Context, next) => {
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = env(c);
-
+  
   const client = createServerClient(
     SUPABASE_URL ?? '',
     SUPABASE_ANON_KEY ?? '',

@@ -25,18 +25,19 @@ async function getTaskById(c: Context, id: string): Promise<Task> {
 
 async function deleteTaskById(c: Context, id: string): Promise<void> {
   const { error } = await c.var.supabase.from('tasks').delete().eq('id', id);
-
   if (error) {
     throw error;
   }
 }
 
 async function createTask(c: Context, task: Omit<Task, 'id'>) {
-  const { error } = await c.var.supabase.from('tasks').insert(task);
+  const { data: results, error } = await c.var.supabase.from('tasks').insert(task).select(*);
+  console.log(results)
 
   if (error) {
+    console.error(error);
     throw error;
-  }
+  }       
 }
 
 async function updateTask(c: Context, id: string, task: Omit<Task, 'id'>) {

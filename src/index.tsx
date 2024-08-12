@@ -14,6 +14,7 @@ import handleError from './middleware/handleError';
 // Router Imports
 import homeRouter from './routes/home';
 import tasksRouter from './routes/tasks';
+import chatRouter from './routes/chat';
 import authRouter from './routes/auth';
 
 // c.var types
@@ -41,6 +42,7 @@ app.use(supabaseMiddleware);
 app.route('/auth', authRouter);
 app.route('/home', homeRouter);
 app.route('/tasks', tasksRouter);
+app.route('/chat', chatRouter);
 
 // Error Handlers
 app.use(layout({ isAuthenticated: false }));
