@@ -2,13 +2,21 @@ import { Context } from 'hono';
 import tasksService from '../services/tasks.service';
 import SuccesfulEdit from '../views/SuccessfulEdit';
 import { TaskSchema, Task } from '../models/task.model';
+import Row from '../views/Row';
 
 async function deleteTaskById(c: Context) {
   const idToDelete = c.req.param('id');
   await tasksService.deleteTaskById(c, idToDelete);
 
   c.status(204);
-  return c.body('');
+  return c.body(null);
+}
+
+async function changeStatusById(c: Context) {
+  const idToDelete = c.req.param('id');
+  const t = await tasksService.changeStatusById(c, idToDelete);
+
+  return c.render(<Row {...t} />);
 }
 
 async function createNewTask(c: Context) {
@@ -35,5 +43,6 @@ async function updateTaskById(c: Context) {
 export default {
   createNewTask,
   deleteTaskById,
-  updateTaskById,
+  updateTaskById,  
+  changeStatusById,
 };
