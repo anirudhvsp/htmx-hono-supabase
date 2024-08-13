@@ -11,7 +11,7 @@ export default function AuthLoginPage({ isInvalid = false }: Props = {}) {
       ></div>
       <div className="w-full p-8 flex flex-col justify-center items-center lg:w-1/2">
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-8">
-          ⚡ Welcome to Hyper Task!
+          ⚡ Welcome to Hyper Chat!
         </h2>
         <div className="w-full max-w-sm">
           <div id="g_id_onload"

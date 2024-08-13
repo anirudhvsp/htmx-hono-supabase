@@ -12,11 +12,11 @@ export default function Header({ isAuthenticated = false }: Props) {
         >
           <a href="/" className="text-center sm:text-left">
             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Hyper Task ⚡
+              Hyper Chat ⚡
             </h1>
 
             <p className="mt-1.5 text-sm text-gray-500">
-              Manage your tasks and due dates here! 📝
+              Chat and manage your tasks here! 💬📝
             </p>
           </a>
 
@@ -25,10 +25,16 @@ export default function Header({ isAuthenticated = false }: Props) {
           ) : (
             <div className="flex flex-col gap-4 mt-4 sm:mt-0 sm:flex-row sm:items-center">
               <a
-                href="/tasks/new"
+                href="/tasks/dashboard"
                 className="block px-5 py-3 text-sm font-medium text-white transition bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring"
               >
-                Create Task
+                Tasks Dashboard
+              </a>
+              <a
+                href="/chat/dashboard"
+                className="block px-5 py-3 text-sm font-medium text-white transition bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring mt-2 sm:mt-0 sm:ml-2"
+              >
+                Chat Dashboard
               </a>
               <a
                 hx-post="/auth/logout"
