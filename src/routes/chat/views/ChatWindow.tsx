@@ -38,12 +38,15 @@ export default function ChatWindow({ messages, loggedInUser, chatSubjectUser }: 
         <MessageList messages={messages} loggedInUser={loggedInUser} />
       </div>
       <div className="mt-4">
-      <form hx-post="/chat/send" hx-target="#message-list" hx-swap="innerhtml scroll:bottom">
+
+      <form hx-post="/chat/send" hx-target="#message-list" hx-swap="innerhtml scroll:bottom" className="flex">
         <input type="hidden" name="chatSubjectUserID" value={chatSubjectUser.id} />
         <input type="hidden" name="loggedInUserID" value={loggedInUser.id} />
-        <textarea name="content" placeholder="Type your message" required></textarea>
-      <button type="submit">Send</button>
-    </form>
+
+
+        <textarea name="content" placeholder="Type your message" required className="w-3/4 p-2 border rounded-l"></textarea>
+        <button type="submit" className="w-1/4 bg-blue-500 text-white rounded-r">Send</button>
+      </form>
       </div>
     </div>
   );
