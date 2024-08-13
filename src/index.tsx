@@ -1,5 +1,5 @@
 // Library Imports
-import { Hono } from 'hono';
+import { Hono } from 'hono/tiny';
 import { logger } from 'hono/logger';
 import { env } from 'hono/adapter';
 import { SupabaseClient } from '@supabase/supabase-js';
