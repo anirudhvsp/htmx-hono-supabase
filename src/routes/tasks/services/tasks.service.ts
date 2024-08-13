@@ -1,7 +1,10 @@
 import { Context } from 'hono';
 
-async function getAllTasks(c: Context): Promise<Task[]> {
-  const { data: tasks, error } = await c.var.supabase.from('tasks').select();
+async function getAllTasks(c: Context, sortField: string = 'due_date', sortDirection: string = 'asc'): Promise<Task[]> {
+  const { data: tasks, error } = await c.var.supabase
+    .from('tasks')
+    .select()
+    .order(sortField, { ascending: sortDirection === 'asc' });
 
   if (error) {
     throw error;

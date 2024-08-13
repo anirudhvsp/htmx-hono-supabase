@@ -7,11 +7,13 @@ import { Context } from 'hono';
 import { Task } from '../models/task.model';
 
 async function tasksTable(c: Context) {
-  const tasks: Task[] = await tasksService.getAllTasks(c);
-  c.res.headers.append('HX-Trigger', 'taskListUpdated');
-  return c.render(<Table tasks={tasks} />);
-}
+  const sortField = c.req.query('sort') || 'due_date';
+  const sortDirection = c.req.query('direction') || 'asc';
 
+  const tasks: Task[] = await tasksService.getAllTasks(c, sortField, sortDirection);
+  c.res.headers.append('HX-Trigger', 'taskListUpdated');
+  return c.render(<Table tasks={tasks} sortField={sortField} sortDirection={sortDirection} />);
+}
 export async function dashboard(c: Context) {
   return c.render(<Dashboard />);
 }
