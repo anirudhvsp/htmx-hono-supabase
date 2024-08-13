@@ -2,6 +2,24 @@ import { Context } from 'hono';
 import {getCookie} from 'hono/cookie'
 
 
+async function getLastSentMessage(c: Context, to_user_id: string): Promise<Message> {
+  const from_user_id = await c.var.supabase.auth.getUser().then(({ data }) => data.user?.id);
+  const { data: message, error } = await c.var.supabase
+    .from('messages')
+    .select('*')
+    .eq('from_user_id', from_user_id)
+    .eq('to_user_id', to_user_id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return message;
+}
+
 async function getChatUsers(c: Context): Promise<any[]> {
   const authSession = await c.var.supabase.auth.getUser(getCookie(c, 'auth_session'));
   const currentUserId = authSession.data.user?.id;
@@ -29,13 +47,14 @@ async function getChatUsers(c: Context): Promise<any[]> {
 }
 
 
-async function getMessages(c: Context, otherUserId: string): Promise<Message[]> {
+async function getMessages(c: Context, otherUserId: string, page: number = 1, messagesPerPage: number = 5): Promise<Message[]> {
   const currentUserId = await c.var.supabase.auth.getUser().then(({ data }) => data.user?.id);
   const { data: messages, error } = await c.var.supabase
     .from('messages')
     .select('*')
     .or(`to_user_id.eq.${currentUserId},to_user_id.eq.${otherUserId},from_user_id.eq.${currentUserId},from_user_id.eq.${otherUserId}`)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: false })
+    .range((page - 1) * messagesPerPage, page * messagesPerPage - 1);
 
   if (error) {
     throw error;
@@ -102,5 +121,6 @@ export default {
   startNewChat,
   sendMessage,
   subscribeToMessages,
-  getUserById
+  getUserById,
+  getLastSentMessage
 };

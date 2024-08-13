@@ -1,27 +1,13 @@
 import MessageList from './MessageList';
 
-interface Message {
-  id: number;
-  to_user_id: string;
-  from_user_id: string;
-  content: string;
-  created_at: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  profile_picture_url: string;
-}
-
 interface ChatWindowProps {
   messages: Message[];
-  loggedInUser: User; // Current user sending the messages
-  chatSubjectUser: User; // User receiving the messages
+  loggedInUser: User;
+  chatSubjectUser: User;
+  currentPage: number;
 }
 
-export default function ChatWindow({ messages, loggedInUser, chatSubjectUser }: ChatWindowProps) {
+export default function ChatWindow({ messages, loggedInUser, chatSubjectUser, currentPage }: ChatWindowProps) {
   return (
     <div>
       <div className="flex justify-between mb-4">
@@ -35,18 +21,25 @@ export default function ChatWindow({ messages, loggedInUser, chatSubjectUser }: 
         </div>
       </div>
       <div id="message-list" className="border-t border-gray-300">
-        <MessageList messages={messages} loggedInUser={loggedInUser} />
+        <MessageList 
+          messages={messages} 
+          loggedInUser={loggedInUser} 
+          currentPage={currentPage}
+          chatSubjectUserId={chatSubjectUser.id}
+        />
       </div>
       <div className="mt-4">
-
-      <form hx-post="/chat/send" hx-target="#message-list" hx-swap="innerhtml scroll:bottom" className="flex">
-        <input type="hidden" name="chatSubjectUserID" value={chatSubjectUser.id} />
-        <input type="hidden" name="loggedInUserID" value={loggedInUser.id} />
-
-
-        <textarea name="content" placeholder="Type your message" required className="w-3/4 p-2 border rounded-l"></textarea>
-        <button type="submit" className="w-1/4 bg-blue-500 text-white rounded-r">Send</button>
-      </form>
+        <form 
+          hx-post="/chat/send-message" 
+          hx-target="#message-groups" 
+          hx-swap="beforeend" 
+          className="flex"
+        >
+          <input type="hidden" name="chatSubjectUserID" value={chatSubjectUser.id} />
+          <input type="hidden" name="loggedInUserID" value={loggedInUser.id} />
+          <textarea name="content" placeholder="Type your message" required className="w-3/4 p-2 border rounded-l"></textarea>
+          <button type="submit" className="w-1/4 bg-blue-500 text-white rounded-r">Send</button>
+        </form>
       </div>
     </div>
   );

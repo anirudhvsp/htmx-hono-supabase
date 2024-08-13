@@ -19,6 +19,7 @@ export default function AuthLoginPage({ isInvalid = false }: Props = {}) {
             data-context="signin"
             data-ux_mode="popup"
             data-login_uri="https://htmx-todo-v2.anirudhvsp.workers.dev/auth/login/google"
+            // data-login_uri="http://localhost:8787/auth/login/google"
             data-auto_select="true"
             data-itp_support="true">
           </div>

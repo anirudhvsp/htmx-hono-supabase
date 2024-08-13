@@ -5,8 +5,8 @@ export default function ChatDashboard() {
         Chat Dashboard
       </h3>
       <div className="flex flex-col md:flex-row">
-        <div id="chat-list" className="pr-4" hx-get="/chat" hx-trigger="load"></div>
-        <div id="chat-window" className="pl-4">
+        <div id="chat-list" className="pr-4 md:w-1/2" hx-get="/chat" hx-trigger="load"></div>
+        <div id="chat-window" className="pl-4 md:w-1/2">
           {"Select a Chat to get started."}
         </div>
       </div>

@@ -3,7 +3,9 @@ import { html } from 'hono/html';
 import chatService from '../services/chat.service';
 import ChatWindow from '../views/ChatWindow';
 import ChatList from '../views/ChatList';
-import MessageList from '../views/MessageList';
+import SingleMessage from '../views/SingleMessage';
+import MessageGroup from '../views/MessageGroup';
+import InfiniteScrollSentinel from '../views/InfiniteScrollSentinel';
 
 async function getChatList(c: Context) {
   
@@ -13,11 +15,11 @@ async function getChatList(c: Context) {
 
 async function getChatWindow(c: Context) {
   const { userId } = c.req.param();
-  const messages = await chatService.getMessages(c, userId);
+  const messages = await chatService.getMessages(c, userId, 1, 5);
   const currentUserId = await c.var.supabase.auth.getUser().then(({ data }) => data.user?.id);
   var currentUser = await chatService.getUserById(c, currentUserId);
   var selectedUser = await chatService.getUserById(c, userId);
-  const chatWindowHtml = ChatWindow({ messages, loggedInUser: currentUser, chatSubjectUser:  selectedUser});
+  const chatWindowHtml = ChatWindow({ messages, loggedInUser: currentUser, chatSubjectUser:  selectedUser, currentPage: 1});
 
   return c.html(chatWindowHtml);
 }
@@ -29,12 +31,12 @@ async function startNewChat(c: Context) {
 }
 
 async function sendMessage(c: Context) {
-  const { loggedInUserID, chatSubjectUserID, content } = await c.req.parseBody();
+  const { chatSubjectUserID, content } = await c.req.parseBody();
   await chatService.sendMessage(c, chatSubjectUserID, content);
-  const messages = await chatService.getMessages(c, chatSubjectUserID);
-  const user = await chatService.getUserById(c, loggedInUserID);
+  const newMessage = await chatService.getLastSentMessage(c, chatSubjectUserID);
+  const loggedInUser = await chatService.getUserById(c, c.var.supabase.auth.getUser().then(({ data }) => data.user?.id));
   
-  return c.render(MessageList({ messages, loggedInUser: user }));
+  return c.render(SingleMessage({ message: newMessage, loggedInUser }));
 }
 
 async function setupSSE(c: Context) {
@@ -47,10 +49,25 @@ async function setupSSE(c: Context) {
   });
 }
 
+async function loadMoreMessages(c: Context) {
+  const { userId, page } = c.req.param();
+  try {
+    const pageNumber = parseInt(page);
+    const messages = await chatService.getMessages(c, userId, pageNumber, 5);
+    const user = await chatService.getUserById(c, userId);
+    const newMessages = MessageGroup({ messages, loggedInUser: user });
+    const newSentinel = InfiniteScrollSentinel({ chatSubjectUserId: userId, nextPage: pageNumber + 1 });
+    return c.html(newMessages + newSentinel);
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 export default {
   getChatList,
   getChatWindow,
   startNewChat,
   sendMessage,
   setupSSE,
+  loadMoreMessages,
 };

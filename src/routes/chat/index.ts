@@ -16,6 +16,7 @@ app.get('/:userId/window', chatController.getChatWindow);
 app.post('/new', chatController.startNewChat);
 app.post('/send-message', chatController.sendMessage);
 app.get('/sse/:userId', chatController.setupSSE);
+app.get('/load-more/:userId/:page', chatController.loadMoreMessages);
 
 // Pages
 app.use(layout());
