@@ -34,6 +34,7 @@ export default function RowButtons({ id }: Props) {
         title="Delete Task"
         hx-delete={`/tasks/${id}`}
         hx-target={`#row-${id}`}
+        hx-swap="outerHTML"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
