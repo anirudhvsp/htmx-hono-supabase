@@ -1,19 +1,25 @@
 import { Context } from 'hono';
 import { html } from 'hono/html';
 import chatService from '../services/chat.service';
-import { ChatList } from '../views/ChatList';
-import { ChatWindow } from '../views/ChatWindow';
+import ChatWindow from '../views/ChatWindow';
+import ChatList from '../views/ChatList';
+import MessageList from '../views/MessageList';
 
 async function getChatList(c: Context) {
+  
   const users = await chatService.getChatUsers(c);
-  return c.html(html`<${ChatList} users=${JSON.stringify(users)} />`);
+  return c.render(ChatList({ users: users }));
 }
 
 async function getChatWindow(c: Context) {
   const { userId } = c.req.param();
   const messages = await chatService.getMessages(c, userId);
   const currentUserId = await c.var.supabase.auth.getUser().then(({ data }) => data.user?.id);
-  return c.html(html`<${ChatWindow} messages=${JSON.stringify(messages)} currentUserId=${currentUserId} otherUserId=${userId} />`);
+  var currentUser = await chatService.getUserById(c, currentUserId);
+  var selectedUser = await chatService.getUserById(c, userId);
+  const chatWindowHtml = ChatWindow({ messages, loggedInUser: currentUser, chatSubjectUser:  selectedUser});
+
+  return c.html(chatWindowHtml);
 }
 
 async function startNewChat(c: Context) {
@@ -23,9 +29,12 @@ async function startNewChat(c: Context) {
 }
 
 async function sendMessage(c: Context) {
-  const { to_user_id, content } = await c.req.parseBody();
-  await chatService.sendMessage(c, to_user_id, content);
-  return c.text('Message sent');
+  const { loggedInUserID, chatSubjectUserID, content } = await c.req.parseBody();
+  await chatService.sendMessage(c, chatSubjectUserID, content);
+  const messages = await chatService.getMessages(c, chatSubjectUserID);
+  const user = await chatService.getUserById(c, loggedInUserID);
+  
+  return c.render(MessageList({ messages, loggedInUser: user }));
 }
 
 async function setupSSE(c: Context) {

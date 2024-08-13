@@ -1,0 +1,12 @@
+import { z } from 'zod';
+
+export const UserProfileSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+  name: z.string(),
+  profile_picture_url: z.string().url().nullable(),
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date()
+});
+
+export type UserProfile = z.infer<typeof UserProfileSchema>;

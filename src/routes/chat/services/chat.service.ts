@@ -1,18 +1,33 @@
 import { Context } from 'hono';
+import {getCookie} from 'hono/cookie'
 
-async function getChatUsers(c: Context): Promise<string[]> {
-  const { data: users, error } = await c.var.supabase
+
+async function getChatUsers(c: Context): Promise<any[]> {
+  const authSession = await c.var.supabase.auth.getUser(getCookie(c, 'auth_session'));
+  const currentUserId = authSession.data.user?.id;
+
+  const { data: toUserIds, error: messagesError } = await c.var.supabase
     .from('messages')
-    .select('to_user_id, from_user_id');
+    .select('to_user_id')
+    .eq('from_user_id', currentUserId);
 
-  if (error) {
-    throw error;
+  if (messagesError) {
+    throw messagesError;
   }
 
-  const currentUserId = await c.var.supabase.auth.getUser().then(({ data }) => data.user?.id);
-  const uniqueUsers = [...new Set(users.flatMap(u => [u.to_user_id, u.from_user_id]))];
-  return uniqueUsers.filter(id => id !== currentUserId);
+  const uniqueToUserIds = [...new Set(toUserIds.map(item => item.to_user_id))];
+  const { data: userProfiles, error: userProfilesError } = await c.var.supabase
+  .from('user_profiles')
+  .select('*')
+  .in('id', uniqueToUserIds);
+
+  if (userProfilesError) {
+    throw userProfilesError;
+  }
+
+  return userProfiles;
 }
+
 
 async function getMessages(c: Context, otherUserId: string): Promise<Message[]> {
   const currentUserId = await c.var.supabase.auth.getUser().then(({ data }) => data.user?.id);
@@ -68,10 +83,24 @@ async function subscribeToMessages(c: Context, otherUserId: string, callback: (m
     .subscribe();
 }
 
+async function getUserById(c: Context, id: string): Promise<Task> {
+  const { data: results, error } = await c.var.supabase
+    .from('user_profiles')
+    .select()
+    .eq('id', id);
+
+  if (error) {
+    throw error;
+  }
+
+  return results[0];
+}
+
 export default {
   getChatUsers,
   getMessages,
   startNewChat,
   sendMessage,
   subscribeToMessages,
+  getUserById
 };

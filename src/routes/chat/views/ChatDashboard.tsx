@@ -8,7 +8,9 @@ export default function ChatDashboard() {
         </h3>
         <div className="flex">
           <div id="chat-list" className="w-1/3 pr-4" hx-get="/chat" hx-trigger="load"></div>
-          <div id="chat-window" className="w-2/3 pl-4"></div>
+          <div id="chat-window" className="w-2/3 pl-4">
+            {"Select a Chat to get started."}
+          </div>
         </div>
       </div>
     );

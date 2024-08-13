@@ -20,7 +20,6 @@ async function loginWithEmail(c: Context) {
 
 async function loginWithGoogle(c: Context) {
   const { credential, g_csrf_token } = await c.req.parseBody();
-
   if (credential && g_csrf_token) {
     const { data, error } = await c.var.supabase.auth.signInWithIdToken({
       provider: 'google',
@@ -28,6 +27,25 @@ async function loginWithGoogle(c: Context) {
     });
 
     if (error === null && data.user) {
+      const { id, email, user_metadata } = data.user
+      const name = user_metadata.full_name || 'Unknown'
+      const profile_picture_url = user_metadata.picture || ''
+
+      const { error: upsertError } = await c.var.supabase
+        .from('user_profiles')
+        .upsert({
+          id,
+          email,
+          name,
+          profile_picture_url,
+          updated_at: new Date().toISOString(),
+        })
+
+      if (upsertError) {
+        console.error(`Error upserting user profile: ${upsertError.message}`)
+        return c.redirect('/auth/error')
+      }
+
       setCookie(c, 'auth_session', data.session?.access_token, {
         httpOnly: true,
         secure: true,
@@ -46,10 +64,29 @@ async function loginWithGoogle(c: Context) {
 async function handleOAuthCallback(c: Context) {
   const code = c.req.query('code');
   const next = c.req.query('next') ?? '/tasks/dashboard';
-
   if (code !== undefined) {
-    const { error } = await c.var.supabase.auth.exchangeCodeForSession(code);
-    if (error === null) {
+    const { data: { session }, error } = await c.var.supabase.auth.exchangeCodeForSession(code);
+    if (error === null && session) {
+      const user = session.user;
+      const { id, email, user_metadata } = user;
+      const name = user_metadata.full_name || 'Unknown';
+      const profile_picture_url = user_metadata.picture || '';
+
+      const { error: upsertError } = await c.var.supabase
+        .from('user_profiles')
+        .upsert({
+          id,
+          email,
+          name,
+          profile_picture_url,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (upsertError) {
+        console.error(`Error upserting user profile: ${upsertError.message}`);
+        return c.redirect('/auth/error');
+      }
+
       return c.redirect(next);
     }
   }
