@@ -8,7 +8,7 @@ import { Task } from '../models/task.model';
 
 async function tasksTable(c: Context) {
   const tasks: Task[] = await tasksService.getAllTasks(c);
-
+  c.res.headers.append('HX-Trigger', 'taskListUpdated');
   return c.render(<Table tasks={tasks} />);
 }
 

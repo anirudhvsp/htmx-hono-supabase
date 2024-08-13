@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Hono } from 'hono/tiny';
 import { layout } from '../../middleware/layout';
 import viewController from './controllers/view.controller';
 

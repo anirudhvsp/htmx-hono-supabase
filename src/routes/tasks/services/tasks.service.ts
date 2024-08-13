@@ -73,6 +73,32 @@ async function updateTask(c: Context, id: string, task: Omit<Task, 'id'>) {
   }
 }
 
+async function getCountOfTasks(c: Context): Promise<{ completed: number; pending: number }> {
+  // Query count of completed tasks
+  const { data: completedData, error: completedError } = await c.var.supabase
+    .from('tasks')
+    .select('id', { count: 'exact' })
+    .eq('completed', true);
+
+  if (completedError) {
+    throw completedError;
+  }
+
+  // Query count of pending tasks
+  const { data: pendingData, error: pendingError } = await c.var.supabase
+    .from('tasks')
+    .select('id', { count: 'exact' })
+    .eq('completed', false);
+
+  if (pendingError) {
+    throw pendingError;
+  }
+
+  // Return counts as an object
+  return { completed: completedData.length, pending: pendingData.length };
+}
+
+
 export default {
   getAllTasks,
   getTaskById,
@@ -81,4 +107,5 @@ export default {
   updateTask, 
   changeStatusById,
   updateTitleById,
+  getCountOfTasks,
 };

@@ -4,7 +4,8 @@ import SuccesfulEdit from '../views/SuccessfulEdit';
 import { TaskSchema, Task } from '../models/task.model';
 import Row from '../views/Row';
 import EditBox from '../views/editTextBox';
-
+import Count from '../views/Count';
+import CountDisplay from '../views/CountDisplay';
 async function deleteTaskById(c: Context) {
   const idToDelete = c.req.param('id');
   await tasksService.deleteTaskById(c, idToDelete);
@@ -16,7 +17,7 @@ async function deleteTaskById(c: Context) {
 async function changeStatusById(c: Context) {
   const idToDelete = c.req.param('id');
   const t = await tasksService.changeStatusById(c, idToDelete);
-
+  c.res.headers.append('HX-Trigger', 'taskListUpdated');
   return c.render(<Row {...t} />);
 }
 
@@ -66,6 +67,14 @@ async function titleFaliure(c: Context) {
 
 }
 
+
+async function getCounts(c: Context) {
+  // Get the counts from the service
+  const { completed, pending } = await tasksService.getCountOfTasks(c);
+
+  return c.render(<CountDisplay completed={completed} pending={pending} />);
+}
+
 export default {
   createNewTask,
   deleteTaskById,
@@ -74,4 +83,5 @@ export default {
   editTitle,
   titleSuccess,
   titleFaliure,
+  getCounts,
 };

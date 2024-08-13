@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Hono } from 'hono/tiny';
 import { layout } from '../../middleware/layout';
 import { authMiddleware } from '../../middleware/auth';
 import tasksController from './controllers/tasks.controller';
@@ -18,6 +18,7 @@ app.put('/:id', tasksController.updateTaskById);
 app.get('/:id/edit-title', tasksController.editTitle);
 app.post('/:id/edit-title/accept', tasksController.titleSuccess);
 app.post('/:id/edit-title/reject', tasksController.titleFaliure);
+app.get('/counts', tasksController.getCounts);
 
 // Pages
 app.use(layout());
