@@ -34,7 +34,7 @@ async function sendMessage(c: Context) {
   const { chatSubjectUserID, content } = await c.req.parseBody();
   await chatService.sendMessage(c, chatSubjectUserID, content);
   const newMessage = await chatService.getLastSentMessage(c, chatSubjectUserID);
-  const loggedInUser = await chatService.getUserById(c, c.var.supabase.auth.getUser().then(({ data }) => data.user?.id));
+  const loggedInUser = await chatService.getUserById(c, chatSubjectUserID);
   
   return c.render(SingleMessage({ message: newMessage, loggedInUser }));
 }
