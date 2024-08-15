@@ -1,6 +1,7 @@
 import { Context } from 'hono';
 import AuthLoginPage from '../views/AuthLoginPage';
 import authService from '../services/auth.service';
+import { env } from 'hono/adapter';
 import { setCookie } from 'hono/cookie';
 async function loginWithEmail(c: Context) {
   const { email, password } = await c.req.parseBody();
@@ -53,11 +54,48 @@ async function loginWithGoogle(c: Context) {
         sameSite: 'Lax',
         path: '/'
       });
-      return c.redirect('/tasks/dashboard');
+      return c.redirect('/home');
     }
 
   return c.redirect('/auth/error');
 }
+}
+
+async function loginWithCustomProvider(c: Context) {
+  const body = await c.req.json();
+  const credential = body.credential;
+  if (credential) {
+    const { data, error } = await c.var.supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: credential
+    })
+
+    if (error === null && data.user) {
+      const { id, email, user_metadata } = data.user
+      const name = user_metadata.full_name || 'Unknown'
+      const profile_picture_url = user_metadata.picture || ''
+
+      const { error: upsertError } = await c.var.supabase
+        .from('user_profiles')
+        .upsert({
+          id,
+          email,
+          name,
+          profile_picture_url,
+          updated_at: new Date().toISOString(),
+        })
+
+      if (upsertError) {
+        console.error(`Error upserting user profile: ${upsertError.message}`)
+        return c.json({ error: 'Authentication failed' }, 500)
+      }
+
+      const authHeader = `Bearer ${data.session?.access_token}`
+      return c.json({ authHeader }, 200)
+    }
+  }
+
+  return c.json({ error: 'Authentication failed' }, 400)
 }
 
 
@@ -104,4 +142,5 @@ export default {
   loginWithGoogle,
   handleOAuthCallback,
   logoutSession,
+  loginWithCustomProvider
 };

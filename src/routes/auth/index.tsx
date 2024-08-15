@@ -6,6 +6,7 @@ import viewController from './controllers/view.controller';
 
 const app = new Hono();
 
+app.post('/customLogin', loginController.loginWithCustomProvider)
 app.use(layout({ isAuthenticated: false }));
 
 app.get('/login', viewController.authLogin);
@@ -14,8 +15,8 @@ app.get('/login/google', loginController.loginWithGoogle);
 app.post('/login/google', loginController.loginWithGoogle);
 app.post('/sign-up', signUpController.signUpWithEmail);
 app.get('/sign-up', viewController.authSignUp);
-app.get('/callback', loginController.handleOAuthCallback);
+// app.get('/callback', loginController.handleOAuthCallback);
 app.post('/logout', loginController.logoutSession);
 app.get('/error', viewController.authError);
-
+  
 export default app;

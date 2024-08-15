@@ -3,7 +3,7 @@ import { Hono } from 'hono/tiny';
 import { logger } from 'hono/logger';
 import { env } from 'hono/adapter';
 import { SupabaseClient } from '@supabase/supabase-js';
-
+import { cors } from 'hono/cors'
 // Middleware Imports
 import { supabaseMiddleware } from './middleware/supabase';
 
@@ -16,6 +16,8 @@ import homeRouter from './routes/home';
 import tasksRouter from './routes/tasks';
 import chatRouter from './routes/chat';
 import authRouter from './routes/auth';
+import invoiceRouter from './routes/invoices';
+
 
 // c.var types
 type Variables = {
@@ -29,6 +31,14 @@ type Bindings = {
 };
 
 const app = new Hono<{ Variables: Variables; Bindings: Bindings }>();
+app.use('*', cors({
+  origin: "http://localhost:3074",
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'hx-request', "hx-target", 'hx-current-url'],
+  exposeHeaders: ['Content-Length'],
+  maxAge: 600,
+  credentials: true,
+}))
 
 // Middleware
 app.use(logger());
@@ -42,6 +52,7 @@ app.route('/auth', authRouter);
 app.route('/home', homeRouter);
 app.route('/tasks', tasksRouter);
 app.route('/chat', chatRouter);
+app.route('/invoices', invoiceRouter);
 
 // Error Handlers
 app.use(layout({ isAuthenticated: false }));
